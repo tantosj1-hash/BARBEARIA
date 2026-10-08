@@ -2,8 +2,28 @@
 
 Site de agendamento da Misael Barbearia — HTML, CSS e JavaScript puros, sem build.
 
-## Como abrir
-Abra `index.html` no navegador, ou publique a pasta no GitHub Pages / Netlify / Vercel.
+## Estrutura
+```
+public/          ← site (é o que vai para o ar)
+  index.html
+  css/ js/ assets/
+firebase.json    ← configuração do Firebase Hosting
+.firebaserc      ← ID do projeto Firebase ("barbearia")
+```
+
+## Publicar no Firebase Hosting
+1. Instale o Node.js (https://nodejs.org) e depois a CLI do Firebase:
+   `npm install -g firebase-tools`
+2. Entre na sua conta: `firebase login`
+3. Confira o ID do projeto: `firebase projects:list`.
+   Se o ID não for exatamente `barbearia` (ex.: `barbearia-1a2b3`), troque em `.firebaserc`
+   ou rode `firebase use --add` e escolha o projeto.
+4. Na pasta do repositório, publique: `firebase deploy --only hosting`
+
+O site fica em `https://<id-do-projeto>.web.app`.
+Não rode `firebase init hosting` — a configuração já está pronta e o init pode sobrescrever o `index.html`.
+
+Para testar localmente: `firebase serve` ou abra `public/index.html` no navegador.
 
 ## O que tem
 - Tabela de valores: Corte R$ 50 (1h), Barba R$ 30 (1h), Alisamento R$ 150 (1h45), Coloração sob avaliação
@@ -14,7 +34,7 @@ Abra `index.html` no navegador, ou publique a pasta no GitHub Pages / Netlify / 
 - "Meus horários": consulta e cancelamento pelo telefone
 
 ## Configurar
-Tudo fica no objeto `CONFIG` no início de `js/app.js`: número do WhatsApp, horário de funcionamento,
+Tudo fica no objeto `CONFIG` no início de `public/js/app.js`: número do WhatsApp, horário de funcionamento,
 preços, durações e combos.
 
 > Os agendamentos ficam salvos no navegador (localStorage). Para o barbeiro ver todos os
@@ -22,5 +42,5 @@ preços, durações e combos.
 > esse número) ou conecte um backend.
 
 ## Imagens
-As ilustrações em `assets/` (interior da barbearia, navalha, tesoura e pente) foram desenhadas em SVG
+As ilustrações em `public/assets/` (interior da barbearia, navalha, tesoura e pente) foram desenhadas em SVG
 para este projeto — sem uso de fotos de terceiros, sem risco de direitos autorais.
