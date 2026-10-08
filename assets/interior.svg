@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <!-- Ilustração original: interior de barbearia em tons de cinza -->
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1c1c1c"/>
+      <stop offset="1" stop-color="#0d0d0d"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#202020"/>
+      <stop offset="1" stop-color="#080808"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".5" cy="0" r=".8">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mirror" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3a3a3a"/>
+      <stop offset=".45" stop-color="#232323"/>
+      <stop offset=".5" stop-color="#2e2e2e"/>
+      <stop offset="1" stop-color="#151515"/>
+    </linearGradient>
+    <pattern id="tiles" width="80" height="80" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="#1a1a1a"/>
+      <rect x="40" y="40" width="40" height="40" fill="#1a1a1a"/>
+      <rect x="40" width="40" height="40" fill="#111"/>
+      <rect y="40" width="40" height="40" fill="#111"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#wall)"/>
+  <!-- lambri -->
+  <g stroke="#262626" stroke-width="2">
+    <path d="M0 520 H1600"/>
+    <path d="M0 540 H1600" stroke="#161616"/>
+  </g>
+  <g fill="none" stroke="#1f1f1f" stroke-width="2">
+    <rect x="30" y="560" width="170" height="120"/><rect x="230" y="560" width="170" height="120"/>
+    <rect x="1200" y="560" width="170" height="120"/><rect x="1400" y="560" width="170" height="120"/>
+  </g>
+
+  <!-- piso xadrez em perspectiva -->
+  <g transform="translate(800 700)">
+    <path d="M-1200 0 H1200 L2400 400 H-2400 Z" fill="url(#floor)"/>
+    <g transform="matrix(1 0 -1.6 0.35 0 0)" opacity=".55">
+      <rect x="-1400" y="0" width="2800" height="600" fill="url(#tiles)"/>
+    </g>
+  </g>
+
+  <!-- espelhos em arco -->
+  <g>
+    <path d="M330 520 V250 a130 130 0 0 1 260 0 V520 Z" fill="url(#mirror)" stroke="#444" stroke-width="6"/>
+    <path d="M670 520 V250 a130 130 0 0 1 260 0 V520 Z" fill="url(#mirror)" stroke="#444" stroke-width="6"/>
+    <path d="M1010 520 V250 a130 130 0 0 1 260 0 V520 Z" fill="url(#mirror)" stroke="#444" stroke-width="6"/>
+    <g stroke="#ffffff" stroke-opacity=".08" stroke-width="18">
+      <path d="M380 470 L520 230"/><path d="M720 470 L860 230"/><path d="M1060 470 L1200 230"/>
+    </g>
+  </g>
+
+  <!-- luminárias pendentes -->
+  <g stroke="#3a3a3a" stroke-width="2" fill="#2a2a2a">
+    <path d="M460 0 V110"/><path d="M800 0 V110"/><path d="M1140 0 V110"/>
+    <path d="M425 140 Q460 100 495 140 Z"/><path d="M765 140 Q800 100 835 140 Z"/><path d="M1105 140 Q1140 100 1175 140 Z"/>
+  </g>
+  <g fill="url(#glow)">
+    <ellipse cx="460" cy="150" rx="220" ry="360"/>
+    <ellipse cx="800" cy="150" rx="220" ry="360"/>
+    <ellipse cx="1140" cy="150" rx="220" ry="360"/>
+  </g>
+
+  <!-- cadeiras de barbeiro (silhuetas) -->
+  <g id="chair" fill="#050505" stroke="#2c2c2c" stroke-width="3">
+    <path d="M410 380 h100 q14 0 14 14 v120 h-128 v-120 q0 -14 14 -14 Z"/>
+    <rect x="380" y="510" width="160" height="44" rx="10"/>
+    <path d="M370 470 h-10 q-10 0 -10 10 v40 h30 Z M550 470 h10 q10 0 10 10 v40 h-30 Z"/>
+    <path d="M430 554 h60 v60 h-60 Z"/>
+    <path d="M455 614 v60"/>
+    <ellipse cx="460" cy="690" rx="70" ry="14"/>
+    <path d="M410 554 l-30 70 h70"/>
+  </g>
+  <use href="#chair" x="340"/>
+  <use href="#chair" x="680"/>
+
+  <!-- poste de barbeiro estilizado -->
+  <g transform="translate(1440 220)">
+    <rect x="-22" y="0" width="44" height="260" rx="22" fill="#e9e9e9"/>
+    <clipPath id="poleclip"><rect x="-22" y="0" width="44" height="260" rx="22"/></clipPath>
+    <g clip-path="url(#poleclip)" stroke="#111" stroke-width="12">
+      <path d="M-60 -20 L60 60 M-60 40 L60 120 M-60 100 L60 180 M-60 160 L60 240 M-60 220 L60 300"/>
+    </g>
+    <rect x="-30" y="-16" width="60" height="18" rx="6" fill="#555"/>
+    <rect x="-30" y="258" width="60" height="18" rx="6" fill="#555"/>
+  </g>
+</svg>

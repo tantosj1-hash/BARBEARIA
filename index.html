@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Misael Barbearia — Agendamento</title>
+  <meta name="description" content="Misael Barbearia: corte, barba, alisamento e coloração com hora marcada. Agende online.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23111'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='38' font-style='italic' fill='%23f2f2f0' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<header class="topbar" id="topo">
+  <a href="#topo" class="brand" aria-label="Misael Barbearia — início">
+    <span class="brand__m">M</span>
+    <span class="brand__txt">Misael<small>Barbearia</small></span>
+  </a>
+  <nav class="nav" aria-label="Principal">
+    <a href="#servicos">Serviços</a>
+    <a href="#combos">Combos</a>
+    <a href="#agendar">Agendar</a>
+    <a href="#meus">Meus horários</a>
+  </nav>
+  <a href="#agendar" class="btn btn--ghost btn--sm">Marcar horário</a>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero__bg" aria-hidden="true"></div>
+    <img class="hero__art" src="assets/tools.svg" alt="" aria-hidden="true">
+    <div class="hero__inner">
+      <p class="eyebrow"><span class="rule"></span>Est. Barbearia de bairro · hora marcada</p>
+      <h1 class="hero__title">
+        <span class="line">Misael</span>
+        <span class="line line--italic">Barbearia</span>
+      </h1>
+      <p class="hero__lead">Corte na tesoura e na máquina, barba com toalha quente e química feita com calma. Você escolhe o serviço, o dia e o horário — a cadeira fica reservada pra você.</p>
+      <div class="hero__cta">
+        <a href="#agendar" class="btn btn--light">Agendar agora</a>
+        <a href="#servicos" class="link-arrow">Ver tabela de valores</a>
+      </div>
+    </div>
+    <dl class="hero__facts">
+      <div><dt>Corte</dt><dd>R$ 50</dd></div>
+      <div><dt>Barba</dt><dd>R$ 30</dd></div>
+      <div><dt>Alisamento</dt><dd>R$ 150</dd></div>
+      <div><dt>Horários</dt><dd id="hero-hours">Ter–Sáb</dd></div>
+    </dl>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker__track">
+      <span>Corte</span><i>✕</i><span>Barba</span><i>✕</i><span>Alisamento</span><i>✕</i><span>Coloração</span><i>✕</i><span>Pigmentação</span><i>✕</i><span>Acabamento na navalha</span><i>✕</i>
+      <span>Corte</span><i>✕</i><span>Barba</span><i>✕</i><span>Alisamento</span><i>✕</i><span>Coloração</span><i>✕</i><span>Pigmentação</span><i>✕</i><span>Acabamento na navalha</span><i>✕</i>
+    </div>
+  </div>
+
+  <!-- SERVIÇOS -->
+  <section class="section" id="servicos">
+    <header class="section__head">
+      <span class="section__num">01</span>
+      <h2>Tabela de serviços</h2>
+      <p>Valores fixos, sem surpresa no caixa. Toque em <em>+</em> para já levar o serviço para o agendamento.</p>
+    </header>
+
+    <div class="menu" id="menu">
+      <!-- preenchido por js/app.js -->
+    </div>
+  </section>
+
+  <!-- COMBOS -->
+  <section class="section section--dark" id="combos">
+    <div class="section__texture" aria-hidden="true"></div>
+    <header class="section__head">
+      <span class="section__num">02</span>
+      <h2>Combos</h2>
+      <p>Juntou serviços, pagou menos. O desconto entra sozinho quando você seleciona a combinação no agendamento.</p>
+    </header>
+    <div class="combos" id="combos-list">
+      <!-- preenchido por js/app.js -->
+    </div>
+  </section>
+
+  <!-- AGENDAMENTO -->
+  <section class="section booking-section" id="agendar">
+    <header class="section__head">
+      <span class="section__num">03</span>
+      <h2>Agendamento</h2>
+      <p>Quatro passos. Leva menos de um minuto.</p>
+    </header>
+
+    <div class="booking">
+      <ol class="steps" id="steps" aria-label="Etapas do agendamento">
+        <li class="is-active" data-step="1"><span>1</span>Serviços</li>
+        <li data-step="2"><span>2</span>Dia</li>
+        <li data-step="3"><span>3</span>Horário</li>
+        <li data-step="4"><span>4</span>Seus dados</li>
+      </ol>
+
+      <div class="booking__body">
+        <form class="panel" id="booking-form" novalidate>
+
+          <!-- Passo 1 -->
+          <fieldset class="pane is-active" data-pane="1">
+            <legend>O que vamos fazer hoje?</legend>
+            <div class="choices" id="service-choices"></div>
+            <p class="hint" id="combo-hint" hidden></p>
+          </fieldset>
+
+          <!-- Passo 2 -->
+          <fieldset class="pane" data-pane="2">
+            <legend>Escolha o dia</legend>
+            <div class="days-wrap">
+              <button type="button" class="days-nav" data-dir="-1" aria-label="Dias anteriores">←</button>
+              <div class="days" id="days" role="listbox" aria-label="Dias disponíveis"></div>
+              <button type="button" class="days-nav" data-dir="1" aria-label="Próximos dias">→</button>
+            </div>
+            <p class="hint" id="hours-hint"></p>
+          </fieldset>
+
+          <!-- Passo 3 -->
+          <fieldset class="pane" data-pane="3">
+            <legend>Escolha o horário</legend>
+            <p class="hint" id="slot-hint"></p>
+            <div class="slots" id="slots" role="listbox" aria-label="Horários disponíveis"></div>
+          </fieldset>
+
+          <!-- Passo 4 -->
+          <fieldset class="pane" data-pane="4">
+            <legend>Quem vai sentar na cadeira?</legend>
+            <div class="field">
+              <label for="f-name">Nome completo</label>
+              <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Ex.: João Pereira" required minlength="3">
+              <small class="err" data-for="f-name"></small>
+            </div>
+            <div class="field">
+              <label for="f-phone">Telefone / WhatsApp</label>
+              <input id="f-phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="(00) 00000-0000" required>
+              <small class="err" data-for="f-phone"></small>
+            </div>
+            <div class="field">
+              <label for="f-note">Observação <span class="opt">(opcional)</span></label>
+              <textarea id="f-note" name="note" rows="2" maxlength="200" placeholder="Ex.: degradê baixo, manter o comprimento em cima"></textarea>
+            </div>
+          </fieldset>
+
+          <div class="panel__foot">
+            <button type="button" class="btn btn--ghost-dark" id="btn-back" hidden>Voltar</button>
+            <button type="button" class="btn btn--dark" id="btn-next" disabled>Continuar</button>
+          </div>
+        </form>
+
+        <aside class="ticket" id="summary" aria-live="polite">
+          <div class="ticket__head">
+            <span>Resumo</span>
+            <span class="mono" id="sum-code">—</span>
+          </div>
+          <ul class="ticket__items" id="sum-items"><li class="muted">Nenhum serviço selecionado</li></ul>
+          <div class="ticket__row"><span>Duração</span><strong id="sum-duration">—</strong></div>
+          <div class="ticket__row"><span>Dia</span><strong id="sum-day">—</strong></div>
+          <div class="ticket__row"><span>Horário</span><strong id="sum-time">—</strong></div>
+          <div class="ticket__perf" aria-hidden="true"></div>
+          <div class="ticket__row ticket__discount" id="sum-discount-row" hidden><span id="sum-discount-label">Desconto</span><strong id="sum-discount">—</strong></div>
+          <div class="ticket__total"><span>Total</span><strong id="sum-total">R$ 0</strong></div>
+          <p class="ticket__note">Pagamento no local: Pix, cartão ou dinheiro.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEUS HORÁRIOS -->
+  <section class="section section--gray" id="meus">
+    <header class="section__head">
+      <span class="section__num">04</span>
+      <h2>Meus horários</h2>
+      <p>Digite o telefone usado no agendamento para ver ou desmarcar.</p>
+    </header>
+    <form class="lookup" id="lookup-form">
+      <input type="tel" id="lookup-phone" inputmode="numeric" placeholder="(00) 00000-0000" aria-label="Telefone">
+      <button class="btn btn--dark" type="submit">Buscar</button>
+    </form>
+    <div class="my-list" id="my-list"></div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer__brand">
+    <span class="brand__m brand__m--lg">M</span>
+    <p>Misael Barbearia<br><span class="muted">Corte · Barba · Química</span></p>
+  </div>
+  <div>
+    <h3>Funcionamento</h3>
+    <ul id="footer-hours"></ul>
+  </div>
+  <div>
+    <h3>Atendimento</h3>
+    <p>Somente com hora marcada.<br>Tolerância de 10 minutos.</p>
+  </div>
+  <p class="footer__copy">© <span id="year"></span> Misael Barbearia</p>
+</footer>
+
+<!-- Modal de confirmação -->
+<div class="modal" id="modal" hidden>
+  <div class="modal__backdrop" data-close></div>
+  <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <p class="eyebrow eyebrow--dark"><span class="rule"></span>Horário reservado</p>
+    <h3 id="modal-title">Te esperamos, <span id="m-name"></span>.</h3>
+    <div class="modal__ticket" id="m-ticket"></div>
+    <div class="modal__actions">
+      <a class="btn btn--dark" id="m-whats" target="_blank" rel="noopener">Enviar no WhatsApp</a>
+      <button class="btn btn--ghost-dark" id="m-ics" type="button">Salvar na agenda</button>
+    </div>
+    <button class="modal__close" type="button" data-close aria-label="Fechar">✕</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
