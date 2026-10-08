@@ -17,7 +17,7 @@ const CONFIG = {
   // Funcionamento (0 = domingo ... 6 = sábado). null = fechado
   hours: {
     0: null,
-    1: null,
+    1: ["09:00", "19:00"],
     2: ["09:00", "19:00"],
     3: ["09:00", "19:00"],
     4: ["09:00", "19:00"],
@@ -240,7 +240,8 @@ function renderDays() {
     const d = parseKey(k);
     const open = CONFIG.hours[d.getDay()];
     const has = open && dayHasSlots(k);
-    const label = !open ? "Fechado" : !has ? "Lotado" : "";
+    const ended = open && !has && slotsFor(k).every((s) => s.past || !s.free) && slotsFor(k).some((s) => s.past);
+    const label = !open ? "Fechado" : ended ? "Encerrado" : !has ? "Lotado" : "";
     return `
       <button type="button" class="day ${state.day === k ? "is-selected" : ""}" data-day="${k}" ${has ? "" : "disabled"}
         role="option" aria-selected="${state.day === k}" title="${label}">
@@ -580,7 +581,7 @@ function bind() {
 
 /* ---------- textos de horário ---------- */
 function renderHours() {
-  const order = [2, 3, 4, 5, 6, 0, 1];
+  const order = [1, 2, 3, 4, 5, 6, 0];
   $("#footer-hours").innerHTML = order.map((d) => {
     const h = CONFIG.hours[d];
     return `<li><span>${WEEK_LONG[d]}</span><span>${h ? `${h[0]}–${h[1]}` : "fechado"}</span></li>`;
