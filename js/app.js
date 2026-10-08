@@ -43,9 +43,9 @@ const CONFIG = {
   ],
 
   combos: [
-    { id: "classico", tag: "O mais pedido", name: "Clássico",      italic: "corte + barba",              items: ["corte", "barba"],               price: 70 },
-    { id: "liso",     tag: "Química",       name: "Liso",          italic: "corte + alisamento",         items: ["corte", "alisamento"],          price: 180 },
-    { id: "completo", tag: "Dia do noivo",  name: "Completo",      italic: "corte + barba + alisamento", items: ["corte", "barba", "alisamento"], price: 200 },
+    { id: "classico", tag: "O mais pedido", name: "Clássico",      italic: "corte + barba",              items: ["corte", "barba"],               price: 70,  duration: 75 },
+    { id: "liso",     tag: "Química",       name: "Liso",          italic: "corte + alisamento",         items: ["corte", "alisamento"],          price: 180, duration: 120 },
+    { id: "completo", tag: "Dia do noivo",  name: "Completo",      italic: "corte + barba + alisamento", items: ["corte", "barba", "alisamento"], price: 200, duration: 135 },
   ],
 };
 
@@ -106,10 +106,11 @@ function pricing() {
   const items = [...state.selected].map(svc).filter(Boolean)
     .sort((a, b) => CONFIG.services.indexOf(a) - CONFIG.services.indexOf(b));
   const subtotal = items.reduce((s, i) => s + i.price, 0);
-  const duration = items.reduce((s, i) => s + i.duration, 0);
   const ids = items.map((i) => i.id).sort().join("|");
   const combo = CONFIG.combos.find((c) => [...c.items].sort().join("|") === ids) || null;
   const total = combo ? combo.price : subtotal;
+  // combo tem duração própria (mais curta que a soma dos serviços)
+  const duration = combo ? combo.duration : items.reduce((s, i) => s + i.duration, 0);
   return { items, subtotal, duration, combo, total, discount: subtotal - total };
 }
 
@@ -159,7 +160,7 @@ function renderCombos() {
   $("#combos-list").innerHTML = CONFIG.combos.map((c) => {
     const items = c.items.map(svc);
     const full = items.reduce((s, i) => s + i.price, 0);
-    const dur = items.reduce((s, i) => s + i.duration, 0);
+    const dur = c.duration;
     return `
       <article class="combo reveal">
         <span class="combo__tag">${c.tag}</span>

@@ -7,7 +7,7 @@ Abra `index.html` no navegador, ou publique a pasta no GitHub Pages / Netlify / 
 
 ## O que tem
 - Tabela de valores: Corte R$ 50 (1h), Barba R$ 30 (1h), Alisamento R$ 150 (1h45), Coloração sob avaliação
-- Combos com desconto aplicado automaticamente
+- Combos com desconto e duração própria, aplicados automaticamente: Corte + Barba (1h15), Corte + Alisamento (2h), Corte + Barba + Alisamento (2h15)
 - Agendamento em 4 passos: serviços → dia → horário → nome e telefone
 - Horários calculados pela duração somada dos serviços, sem sobreposição
 - Confirmação com envio pelo WhatsApp e arquivo `.ics` para a agenda
