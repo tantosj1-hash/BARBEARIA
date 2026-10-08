@@ -1,0 +1,28 @@
+/* Painel do barbeiro */
+.admin { background: var(--paper); min-height: 100svh; }
+.admin__bar { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px var(--pad); background: var(--ink); color: var(--white); }
+.admin__bar-actions { display: flex; gap: 8px; }
+.admin__main { padding: 40px var(--pad) 80px; max-width: 980px; }
+.admin h1 { font-family: var(--serif); font-size: clamp(36px, 6vw, 60px); line-height: 1; margin-bottom: 10px; }
+.admin__card { padding: 28px; max-width: 420px; min-height: 0; margin-top: 24px; gap: 4px; }
+.admin__head { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; border-bottom: 1px solid var(--ink); padding-bottom: 16px; margin-bottom: 12px; }
+.admin__filters { display: flex; border: 1px solid var(--ink); }
+.admin__filters button { padding: 8px 14px; border: 0; background: transparent; font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+.admin__filters button + button { border-left: 1px solid var(--ink); }
+.admin__filters button.is-on { background: var(--ink); color: var(--white); }
+.admin__list { display: grid; gap: 10px; margin-top: 20px; }
+.admin__day { font-family: var(--mono); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--g-500); margin: 18px 0 2px; }
+.appt { display: grid; grid-template-columns: 120px 1fr auto; gap: 18px; align-items: center; padding: 16px 20px; background: var(--white); border: 1px solid var(--g-300); }
+.appt.is-new { border-color: var(--ink); box-shadow: 4px 4px 0 var(--ink); }
+.appt.is-cancel { opacity: .45; }
+.appt__time { font-family: var(--serif); font-size: 28px; line-height: 1; }
+.appt__time small { display: block; font-family: var(--mono); font-size: 12px; color: var(--g-500); margin-top: 4px; }
+.appt__who strong { display: block; font-size: 17px; font-weight: 500; }
+.appt__who span { display: block; font-size: 14px; color: var(--g-600); }
+.appt__who em { display: block; font-style: normal; font-size: 13px; color: var(--g-500); margin-top: 4px; }
+.appt__actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.admin__offline { margin-top: 24px; padding: 16px; border: 1px dashed var(--g-400); }
+@media (max-width: 640px) {
+  .appt { grid-template-columns: 1fr; gap: 10px; }
+  .appt__actions { justify-content: flex-start; }
+}

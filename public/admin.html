@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Painel — Misael Barbearia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin">
+
+<header class="admin__bar">
+  <a href="/" class="brand"><span class="brand__m">M</span><span class="brand__txt">Misael<small>Painel</small></span></a>
+  <div class="admin__bar-actions" id="session" hidden>
+    <button class="btn btn--ghost btn--sm" id="btn-alerts" type="button">Ativar alertas</button>
+    <button class="btn btn--ghost btn--sm" id="btn-logout" type="button">Sair</button>
+  </div>
+</header>
+
+<main class="admin__main">
+
+  <section class="admin__login" id="login">
+    <h1>Agenda da barbearia</h1>
+    <p class="muted">Acesso restrito. Entre com a conta do barbeiro.</p>
+    <form id="login-form" class="panel admin__card">
+      <div class="field">
+        <label for="l-email">E-mail</label>
+        <input id="l-email" type="email" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="l-pass">Senha</label>
+        <input id="l-pass" type="password" autocomplete="current-password" required minlength="6">
+      </div>
+      <small class="err" id="login-err"></small>
+      <button class="btn btn--dark" type="submit">Entrar</button>
+    </form>
+  </section>
+
+  <section id="agenda" hidden>
+    <div class="admin__head">
+      <h1>Agenda</h1>
+      <div class="admin__filters" role="tablist">
+        <button class="is-on" data-range="hoje" type="button">Hoje</button>
+        <button data-range="amanha" type="button">Amanhã</button>
+        <button data-range="todos" type="button">Próximos</button>
+      </div>
+    </div>
+    <p class="muted" id="agenda-info"></p>
+    <div class="admin__list" id="list"></div>
+  </section>
+
+  <p class="admin__offline" id="offline" hidden>
+    O painel só funciona no site publicado no Firebase (<code>https://SEU-PROJETO.web.app/admin</code>).
+  </p>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="/__/firebase/10.12.2/firebase-app-compat.js"></script>
+<script src="/__/firebase/10.12.2/firebase-auth-compat.js"></script>
+<script src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script>
+<script src="/__/firebase/init.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

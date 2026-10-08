@@ -148,6 +148,15 @@
               <label for="f-note">Observação <span class="opt">(opcional)</span></label>
               <textarea id="f-note" name="note" rows="2" maxlength="200" placeholder="Ex.: degradê baixo, manter o comprimento em cima"></textarea>
             </div>
+            <div class="hp" aria-hidden="true">
+              <label for="f-site">Não preencha este campo</label>
+              <input id="f-site" name="site" type="text" tabindex="-1" autocomplete="off">
+            </div>
+            <label class="consent">
+              <input type="checkbox" id="f-consent">
+              <span>Autorizo o uso do meu nome e telefone <strong>somente</strong> para este agendamento. Os dados ficam protegidos, só a barbearia tem acesso e não são compartilhados (LGPD).</span>
+            </label>
+            <small class="err" data-for="f-consent"></small>
           </fieldset>
 
           <div class="panel__foot">
@@ -179,12 +188,8 @@
     <header class="section__head">
       <span class="section__num">04</span>
       <h2>Meus horários</h2>
-      <p>Digite o telefone usado no agendamento para ver ou desmarcar.</p>
+      <p>Os horários que você marcou por este aparelho. Por segurança, seus dados pessoais não ficam visíveis aqui nem no site.</p>
     </header>
-    <form class="lookup" id="lookup-form">
-      <input type="tel" id="lookup-phone" inputmode="numeric" placeholder="(00) 00000-0000" aria-label="Telefone">
-      <button class="btn btn--dark" type="submit">Buscar</button>
-    </form>
     <div class="my-list" id="my-list"></div>
   </section>
 
@@ -223,6 +228,10 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<!-- Firebase (servido pelo próprio Firebase Hosting; fora dele o site roda em modo demonstração) -->
+<script src="/__/firebase/10.12.2/firebase-app-compat.js"></script>
+<script src="/__/firebase/10.12.2/firebase-firestore-compat.js"></script>
+<script src="/__/firebase/init.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

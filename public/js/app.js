@@ -4,9 +4,8 @@
    ========================================================== */
 
 const CONFIG = {
-  // Número que recebe as confirmações (DDI + DDD + número, só dígitos). Ex.: "5511999999999"
-  // Vazio = o WhatsApp abre para o cliente escolher o contato.
-  whatsapp: "",
+  // WhatsApp da barbearia (DDI + DDD + número, só dígitos): +55 62 8321-3862
+  whatsapp: "556283213862",
 
   // Intervalo entre horários de início, em minutos
   slotStep: 30,
@@ -79,6 +78,7 @@ const maskPhone = (v) => {
 };
 const svc = (id) => CONFIG.services.find((s) => s.id === id);
 
+// Guarda no aparelho do cliente só o necessário para "Meus horários" — sem nome e sem telefone.
 const store = {
   all() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; } },
   save(list) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); } catch {} },
@@ -256,8 +256,55 @@ function renderDays() {
   });
 }
 
+/* ---------- dados ----------
+   Publicado no Firebase Hosting: os agendamentos vão para o Firestore, protegidos pelas
+   regras de firestore.rules. O público só consegue ler "blocos" de 15 min ocupados
+   (dia + hora), nunca nome ou telefone. Só a conta do barbeiro (admin.html) lê os dados.
+   Fora do Firebase (arquivo aberto no computador): modo demonstração, salva só no aparelho. */
+const BLOCK = 15;
+const remote = { db: null, busy: {} };
+
+function initRemote() {
+  try {
+    if (!window.firebase || !firebase.apps.length || !firebase.firestore) return;
+    remote.db = firebase.firestore();
+  } catch { return; }
+  remote.db.collection("blocos").where("dia", ">=", dateKey(new Date())).onSnapshot((snap) => {
+    const busy = {};
+    snap.forEach((doc) => {
+      const { dia, hora } = doc.data();
+      (busy[dia] ||= []).push([hora, hora + BLOCK]);
+    });
+    remote.busy = busy;
+    syncAll();
+  }, (err) => {
+    console.warn("Agenda online indisponível, usando modo local:", err.code);
+    remote.db = null;
+    syncAll();
+  });
+}
+
+async function saveRemote(b) {
+  const db = remote.db;
+  const ref = db.collection("agendamentos").doc();
+  const inicio = toMin(b.time);
+  const batch = db.batch();
+  batch.set(ref, {
+    codigo: b.id, nome: b.name, telefone: b.phone, obs: b.note,
+    servicos: b.services, combo: b.combo, total: b.total, duracao: b.duration,
+    dia: b.day, inicio, status: "confirmado", consentimento: true,
+    criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
+  });
+  // um documento por bloco de 15 min: se algum já existir, o lote inteiro é recusado (sem horário duplo)
+  for (let t = inicio; t < inicio + b.duration; t += BLOCK) {
+    batch.set(db.collection("blocos").doc(`${b.day}_${t}`), { dia: b.day, hora: t, ref: ref.id });
+  }
+  await batch.commit();
+}
+
 /* ---------- passo 3: horários ---------- */
 function bookedRanges(dayKey) {
+  if (remote.db) return remote.busy[dayKey] || [];
   return store.all().filter((b) => b.day === dayKey && !b.cancelled).map((b) => [toMin(b.time), toMin(b.time) + b.duration]);
 }
 
@@ -387,17 +434,20 @@ function validate() {
   if (name.length < 3) errs["f-name"] = "Informe seu nome.";
   else if (!/^[\p{L}' .-]+$/u.test(name)) errs["f-name"] = "Use apenas letras no nome.";
   if (phone.length < 10 || phone.length > 11) errs["f-phone"] = "Telefone com DDD, ex.: (11) 98765-4321.";
-  ["f-name", "f-phone"].forEach((id) => {
+  if (!$("#f-consent").checked) errs["f-consent"] = "Marque a autorização para concluir.";
+  ["f-name", "f-phone", "f-consent"].forEach((id) => {
     $(`.err[data-for="${id}"]`).textContent = errs[id] || "";
-    $(`#${id}`).closest(".field").classList.toggle("has-error", !!errs[id]);
+    $(`#${id}`).closest(".field")?.classList.toggle("has-error", !!errs[id]);
   });
   return Object.keys(errs).length ? null : { name, phone };
 }
 
 /* ---------- confirmar ---------- */
-function confirmBooking() {
+async function confirmBooking() {
+  if (confirmBooking.busy) return;
   const data = validate();
   if (!data) return;
+  if ($("#f-site").value) return; // campo-isca: preenchido só por robôs
   const p = pricing();
   // checagem final de conflito (outra aba pode ter marcado)
   if (!slotsFor(state.day).find((s) => s.time === state.time && s.free)) {
@@ -406,7 +456,7 @@ function confirmBooking() {
     return;
   }
   const booking = {
-    id: "MB-" + Math.random().toString(36).slice(2, 7).toUpperCase(),
+    id: "MB-" + [...crypto.getRandomValues(new Uint8Array(5))].map((n) => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[n % 32]).join(""),
     name: data.name,
     phone: data.phone,
     note: $("#f-note").value.trim(),
@@ -416,10 +466,28 @@ function confirmBooking() {
     duration: p.duration,
     day: state.day,
     time: state.time,
-    createdAt: new Date().toISOString(),
   };
-  const all = store.all(); all.push(booking); store.save(all);
+
+  const btn = $("#btn-next");
+  confirmBooking.busy = true;
+  btn.disabled = true; btn.textContent = "Reservando…";
+  try {
+    if (remote.db) await saveRemote(booking);
+  } catch (err) {
+    const taken = err && (err.code === "permission-denied" || err.code === "already-exists");
+    toast(taken ? "Esse horário acabou de ser ocupado. Escolha outro." : "Não foi possível reservar. Verifique a internet e tente de novo.");
+    if (taken) { state.time = null; goStep(3); renderSummary(); }
+    return;
+  } finally {
+    confirmBooking.busy = false;
+    btn.textContent = state.step === 4 ? "Confirmar agendamento" : "Continuar";
+    updateNext();
+  }
+
+  const { name, phone, note, ...local } = booking; // sem dados pessoais no aparelho
+  const all = store.all(); all.push(local); store.save(all);
   openModal(booking);
+  renderMine();
 
   // reinicia o fluxo
   state.selected.clear(); state.day = null; state.time = null; state.dayOffset = 0;
@@ -446,9 +514,7 @@ function openModal(b) {
     <div><span>Horário</span><strong>${b.time} – ${end}</strong></div>
     <div><span>Telefone</span><strong>${maskPhone(b.phone)}</strong></div>
     <div><span>Total</span><strong>${brl(b.total)}</strong></div>`;
-  const msg = `Olá! Agendei na Misael Barbearia:%0A` +
-    encodeURIComponent(`• ${names}${combo ? ` (combo ${combo.name})` : ""}\n• ${fmtDay(b.day)}, ${b.time}–${end}\n• Total: ${brl(b.total)}\n• Nome: ${b.name}\n• Código: ${b.id}`);
-  $("#m-whats").href = `https://wa.me/${CONFIG.whatsapp}?text=${msg}`;
+  $("#m-whats").href = waLink(`Olá! Agendei na Misael Barbearia:\n• ${names}${combo ? ` (combo ${combo.name})` : ""}\n• ${fmtDay(b.day)}, ${b.time}–${end}\n• Total: ${brl(b.total)}\n• Nome: ${b.name}\n• Código: ${b.id}`);
   $("#m-ics").onclick = () => downloadICS(b);
   $("#modal").hidden = false;
   document.body.style.overflow = "hidden";
@@ -481,13 +547,15 @@ function downloadICS(b) {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
-/* ---------- meus horários ---------- */
-function renderMine(phone) {
+const waLink = (text) => `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(text)}`;
+
+/* ---------- meus horários (só deste aparelho) ---------- */
+function renderMine() {
   const box = $("#my-list");
-  const list = store.all().filter((b) => b.phone === phone && !b.cancelled)
+  const list = store.all().filter((b) => !b.cancelled)
     .sort((a, b) => (a.day + a.time).localeCompare(b.day + b.time));
   if (!list.length) {
-    box.innerHTML = `<p class="muted">Nenhum horário encontrado para ${maskPhone(phone)}.</p>`;
+    box.innerHTML = `<p class="muted">Nenhum horário marcado por este aparelho.</p>`;
     return;
   }
   const today = dateKey(new Date());
@@ -499,7 +567,10 @@ function renderMine(phone) {
       <div class="my-item ${past ? "my-item--past" : ""}">
         <div class="my-item__date">${pad(d.getDate())}/${pad(d.getMonth() + 1)}<small>${WEEK_LONG[d.getDay()]}</small></div>
         <div class="my-item__info"><strong>${names} · ${b.time}–${end}</strong><span>${b.id} · ${brl(b.total)}</span></div>
-        ${past ? `<span class="mono muted">realizado</span>` : `<button class="btn btn--ghost-dark btn--sm" data-cancel="${b.id}">Desmarcar</button>`}
+        <div class="my-item__actions">
+          ${past ? `<span class="mono muted">realizado</span>` : `<a class="btn btn--ghost-dark btn--sm" target="_blank" rel="noopener" href="${waLink(`Olá! Preciso desmarcar o horário ${b.id} (${fmtDay(b.day)}, ${b.time}).`)}">Pedir para desmarcar</a>`}
+          <button class="btn btn--ghost-dark btn--sm" data-forget="${b.id}" title="Remove só a lembrança deste aparelho">Apagar daqui</button>
+        </div>
       </div>`;
   }).join("");
 }
@@ -543,29 +614,19 @@ function bind() {
     renderSlots(); renderSummary(); updateNext();
   });
 
-  ["#f-phone", "#lookup-phone"].forEach((s) => $(s).addEventListener("input", (e) => {
+  ["#f-phone"].forEach((s) => $(s).addEventListener("input", (e) => {
     e.target.value = maskPhone(e.target.value);
   }));
   ["#f-name", "#f-phone"].forEach((s) => $(s).addEventListener("blur", () => {
     if ($("#f-name").value || $("#f-phone").value) validate();
   }));
 
-  $("#lookup-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const p = digits($("#lookup-phone").value);
-    if (p.length < 10) { toast("Digite o telefone com DDD."); return; }
-    renderMine(p);
-  });
   $("#my-list").addEventListener("click", (e) => {
-    const b = e.target.closest("[data-cancel]");
+    const b = e.target.closest("[data-forget]");
     if (!b) return;
-    if (!confirm("Desmarcar este horário?")) return;
-    const all = store.all();
-    const bk = all.find((x) => x.id === b.dataset.cancel);
-    if (bk) { bk.cancelled = true; store.save(all); }
-    renderMine(digits($("#lookup-phone").value));
-    syncAll();
-    toast("Horário desmarcado. O horário ficou livre.");
+    if (!confirm("Apagar este horário da lista deste aparelho? (o agendamento continua marcado)")) return;
+    store.save(store.all().filter((x) => x.id !== b.dataset.forget));
+    renderMine();
   });
 
   $$("[data-close]").forEach((el) => el.addEventListener("click", closeModal));
@@ -607,5 +668,7 @@ renderCombos();
 renderChoices();
 renderHours();
 bind();
+initRemote();
 syncAll();
+renderMine();
 reveal();
