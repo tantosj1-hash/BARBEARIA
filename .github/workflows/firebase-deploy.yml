@@ -1,0 +1,21 @@
+# Publica o site no Firebase Hosting a cada alteração enviada ao GitHub.
+# Requer o secret FIREBASE_SERVICE_ACCOUNT (ver README).
+name: Publicar no Firebase
+
+on:
+  push:
+    branches:
+      - main
+      - claude/misael-barbearia-booking-qj8lbr
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          channelId: live

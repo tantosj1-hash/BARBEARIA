@@ -23,6 +23,16 @@ firebase.json    ← configuração do Firebase Hosting
 O site fica em `https://<id-do-projeto>.web.app`.
 Não rode `firebase init hosting` — a configuração já está pronta e o init pode sobrescrever o `index.html`.
 
+## Publicação automática (GitHub → Firebase)
+O arquivo `.github/workflows/firebase-deploy.yml` publica o site sozinho sempre que uma alteração
+chega ao GitHub. Configuração (uma vez só):
+1. Firebase Console → ⚙️ Configurações do projeto → **Contas de serviço** → **Gerar nova chave privada**
+   (baixa um arquivo `.json`).
+2. GitHub → repositório → **Settings → Secrets and variables → Actions → New repository secret**
+   - Name: `FIREBASE_SERVICE_ACCOUNT`
+   - Secret: cole todo o conteúdo do arquivo `.json`
+3. Pronto. Acompanhe as publicações na aba **Actions** do repositório.
+
 Para testar localmente: `firebase serve` ou abra `public/index.html` no navegador.
 
 ## O que tem
